@@ -13,6 +13,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        var timedEvent;
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
 
@@ -48,6 +49,7 @@ class Play extends Phaser.Scene {
         // initialize score
         this.p1Score = 0;
 
+
         // display score
         let scoreConfig = {
             fontFamily: 'Courier',
@@ -62,13 +64,33 @@ class Play extends Phaser.Scene {
             fixedWidth: 100
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, this.p1Score, scoreConfig);
-        //this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding*2, gameTimer, scoreConfig);
+
+        this.add.text(borderUISize + borderPadding*31, borderUISize + borderPadding*2, 'Time: ', scoreConfig);
+        // initialize timer;
+        this.p1Time = game.settings.gameTimer / 1000;
+
+        //display time
+        let timeConfig = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'left',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 100
+        }
+        this.scoreRight = this.add.text(borderUISize + borderPadding*40, borderUISize + borderPadding*2, this.p1Time, timeConfig);
+        timedEvent = this.time.addEvent({delay: 1000, callback: this.onEvent, callbackScope:this, repeat: game.settings.gameTimer / 1000 - 1});
+
 
         // GAME OVER flag
         this.gameOver = false;
-
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
+
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width/2, game.config.height/2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width/2, game.config.height/2 + 64, 'Press (R) to Restart or ← to Menu', scoreConfig).setOrigin(0.5);
@@ -136,7 +158,10 @@ class Play extends Phaser.Scene {
         // score add and repaint
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score; 
-        
         this.sound.play('sfx_explosion');
-      }
+    }
+    onEvent(){
+        this.p1Time -= 1;
+        this.scoreRight.text = this.p1Time; 
+    }
 }
