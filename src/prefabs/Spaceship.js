@@ -1,10 +1,12 @@
 // Spaceship prefab
+//Siwen Tao, Rocket Patrol Mod, 4/18/2022, it took me about 8 hours.
 class Spaceship extends Phaser.GameObjects.Sprite {
-    constructor(scene, x, y, texture, frame, pointValue) {
+    constructor(scene, x, y, texture, frame, pointValue, t, level) {
         super(scene, x, y, texture, frame);
         scene.add.existing(this);   // add to existing scene
         this.points = pointValue;   // store pointValue
-        this.moveSpeed = game.settings.spaceshipSpeed;         // pixels per frame
+        this.bonusTime = t;
+        this.moveSpeed = game.settings.spaceshipSpeed + level;         // pixels per frame
     }
 
     update() {
